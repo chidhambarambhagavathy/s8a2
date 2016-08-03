@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>MySelfieTech</title>
+	<style>
+		body {
+			margin: 0 auto;
+			width: 400px;
+		}
+		
+		h1 {
+			text-align: center;
+		}
+
+		#container {
+			text-align: center;
+		}
+
+		#signup, #login {
+			margin: 0 auto;
+		}
+
+		#signup p {
+			text-align: center;
+			font-size: 1.2em;
+			padding-bottom: 0;
+			margin-bottom: 0;
+			font-weight: bold;
+		}
+
+		#login p {
+			text-align: center;
+			font-size: 1.2em;
+			padding-bottom: 0;
+			margin-bottom: 0;
+			font-weight: bold;
+		}
+
+	</style>
+	<script>
+		var curLoginName;
+
+		function showHome() {
+			if(localStorage.getItem('loggedin') != "true") {
+				var container = document.getElementById('container');
+				container.innerHTML = "<br><br><br>	<input type='button' value='Login' onclick='loginForm()'><input type='button' value='SignUp' onclick='signupForm()'>";
+			}
+			else {
+				welcomeScreen();
+			}
+		}
+
+		function signupForm() {
+			var container = document.getElementById('container');
+			container.innerHTML = "<div id='signup' style='width:175px'><p>SignUp</p><input id='name' type='text' placeholder='Name'><br><input id='email' type='text' placeholder='sample@gmail.com'><br><input id='pass' type='password' placeholder='Password'><br><br><input type='button' value='Submit Query' onclick='saveLogin()'><br><br><p id='status'></p><br><input type='button' value='Back' onclick='showHome()' style='float: right'><br></div>";
+		}
+		function loginForm() {
+			var container = document.getElementById('container');
+			container.innerHTML = "<div id='login' style='width:175px'><p>Login</p><input id='email' type='text' placeholder='sample@gmail.com'><br><input id='pass' type='password' placeholder='Password'><br><br><input type='button' value='Submit Query' onclick='validateLogin()'><br><br><p id='status'></p><br><input type='button' value='Back' onclick='showHome()' style='float: right'><br></div>";
+		}
+
+		function saveLogin() {
+			var userDtls = new Object();
+			console.log(userDtls);
+			userDtls.name =	document.getElementById('name').value;
+			userDtls.email = document.getElementById('email').value;
+			userDtls.pass = document.getElementById('pass').value;
+			localStorage.setItem(userDtls.email, JSON.stringify(userDtls));
+			console.log(localStorage);
+			showHome();
+		}
+
+		function validateLogin() {
+			var email = document.getElementById('email');
+			var pass = document.getElementById('pass');
+			var status = document.getElementById('status');
+
+			console.log(email.value);
+			var userDtls = JSON.parse(localStorage.getItem(email.value));
+			console.log('Valildation: ' + userDtls);
+
+			if(userDtls == null || userDtls.email != email.value) {
+				status.innerHTML = "Invalid Email";		
+				return;	
+			}
+
+			if(userDtls.pass != pass.value) {
+				status.innerHTML = "Invalid Password";		
+				return;		
+			}
+			curLoginName = userDtls.name;
+			welcomeScreen();
+		}
+
+		function welcomeScreen() {
+			var container = document.getElementById('container');
+			container.innerHTML = "<div id='welcome'> <p>Welcome to "+curLoginName+"</p><br><input type='button' value='Logout' style='float: right' onclick='showHome()'></div>";
+		}
+
+	</script>
+</head>
+<body>
+	<h1>MySelfieTech</h1>
+	<div id="container">
+	</div>
+	<script>
+		localStorage.setItem('loggedin','false');
+
+		window.onload = function () {
+			showHome();
+		}
+	</script>
+</body>
+</html>
